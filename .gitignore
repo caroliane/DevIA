@@ -17,6 +17,3 @@ __pycache__/
 # Dépendances
 *.egg-info/
 .Python
-
-# Exclure toutes les images PNG
-*.png
