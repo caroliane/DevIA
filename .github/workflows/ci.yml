@@ -22,7 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10  # Adaptez à votre version de Python
+          python-version: 3.11  # Adaptez à votre version de Python
 
       # Étape 3 : Installer les dépendances
       - name: Install dependencies
