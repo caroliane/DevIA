@@ -1,0 +1,11 @@
+fastapi
+httpx
+uvicorn
+python-dotenv
+python-multipart
+pytest
+pytest-asyncio
+langchain
+langchain-openai
+langchain-core
+langchain_community

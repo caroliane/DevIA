@@ -1,0 +1,1 @@
+"""Pour que Python puisse reconnaître data_api comme un module, il doit contenir un fichier spécial nommé __init__.py"""
