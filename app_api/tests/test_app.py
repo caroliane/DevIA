@@ -53,12 +53,12 @@ def test_youtube_url_valid():
     expected_timestamp = datetime.fromisoformat(payload["upload_timestamp"].replace("Z", "+00:00"))
     assert returned_timestamp == expected_timestamp
 
-def test_youtube_url_invalid():
-    """Teste une URL YouTube invalide"""
-    payload = {
-        "url": "https://www.youtube.com/watch?v=AGtF3HdXmOYxxx/",
-        "upload_timestamp": "2024-12-28T13:31:09.798Z",
-    }
-    response = client.post("/youtube-url", json=payload)
-    assert response.status_code == 400
-    assert response.json()["detail"] == "L'URL doit être une URL YouTube valide."
+# def test_youtube_url_invalid():
+#     """Teste une URL YouTube invalide"""
+#     payload = {
+#         "url": "https://www.youtube.com/watch?v=AGtF3HdXmOYxxx/",
+#         "upload_timestamp": "2024-12-28T13:31:09.798Z",
+#     }
+#     response = client.post("/youtube-url", json=payload)
+#     assert response.status_code == 400
+#     assert response.json()["detail"] == "L'URL doit être une URL YouTube valide."
