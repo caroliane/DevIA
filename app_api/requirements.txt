@@ -9,3 +9,4 @@ langchain
 langchain-openai
 langchain-core
 langchain_community
+pymongo==4.10

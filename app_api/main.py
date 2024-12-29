@@ -1,10 +1,24 @@
-from fastapi import FastAPI, HTTPException
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
 import httpx
-from app_api.pydantic_models import YoutubeUrlInfo # Pour définir la forme des données de requête et de réponse
+from pydantic_models import YoutubeUrlInfo # Pour définir la forme des données de requête et de réponse
+from pydantic import ValidationError
+from mongo_utils import insert_yt_url_record, create_yt_url_store_index
+from pymongo.errors import DuplicateKeyError
 
+# # Initialisation MongoDB : création des index
+# create_yt_url_store_index()
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_yt_url_store_index()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 DATA_API_URL = os.getenv("DATA_API_URL", "http://localhost:9000")
 
@@ -24,12 +38,20 @@ async def fetch_data():
 async def youtube_url(info: YoutubeUrlInfo):
     """
     Valide une URL YouTube et renvoie les informations associées.
+    Enregistre l'URL dans la base de données et renvoie un message.
     """
     try:
-        return {
-            "url": info.url,
-            "upload_timestamp": info.upload_timestamp,
-            "message": "L'URL YouTube est valide et a été acceptée."
-        }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        # Appelle la fonction d'insertion
+        result = insert_yt_url_record(info.url)
+        if "id" in result:
+            return {
+                "url": info.url,
+                "upload_timestamp": info.upload_timestamp,
+                "message": "L'URL YouTube est valide et a été enregistrée."
+            }
+        else:
+            raise HTTPException(status_code=400, detail=result["message"])
+    except DuplicateKeyError:
+        raise HTTPException(status_code=400, detail="L'URL YouTube est déjà enregistrée.")
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail="L'URL doit être une URL YouTube valide.")

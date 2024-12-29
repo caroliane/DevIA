@@ -12,9 +12,15 @@ class YoutubeUrlInfo(BaseModel):
     url: HttpUrl  # URL YouTube à télécharger
     upload_timestamp: datetime  # Date et heure du téléchargement
 
-    @field_validator("url")
-    def validate_youtube_url(cls, value):
-        url_str = str(value)  # Convertir HttpUrl en chaîne
-        if "youtube.com" not in url_str and "youtu.be" not in url_str:
+    @classmethod
+    def validate_url(cls, url: str):
+        if not url.startswith("https://www.youtube.com/watch"):
             raise ValueError("L'URL doit être une URL YouTube valide.")
-        return value
+        return url
+    
+    # @field_validator("url")
+    # def validate_youtube_url(cls, value):
+    #     url_str = str(value)  # Convertir HttpUrl en chaîne
+    #     if "youtube.com" not in url_str and "youtu.be" not in url_str:
+    #         raise ValueError("L'URL doit être une URL YouTube valide.")
+    #     return value
